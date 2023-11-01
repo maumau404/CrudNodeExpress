@@ -1,6 +1,6 @@
 //requisição na pasta express
 const express = require('express')
-const userRepository = require('../NodeBackEnd/repositories/users');
+const userService = require('../NodeBackEnd/services/users')
 const app = express()
 //salvando na port 3000
 const port = 3000
@@ -12,7 +12,7 @@ app.use(express.json());
 //uma consulta ou resposta retornada
 //get users
 app.get('/users', (req, res) => {
-  res.json(userRepository.getUsers());
+  res.json(userService.getUsers());
 })
 
 app.get ('/users/:id', (req,res) => {
@@ -20,8 +20,7 @@ app.get ('/users/:id', (req,res) => {
   const idUser = req.params.id;
  //encontrar o usuario correspondente no banco
 
-
-res.json(userRepository.getUserById(idUser));
+res.json(userService.getUsersById(idUser));
 
  //responder a requisição com as info do users
 
@@ -37,19 +36,21 @@ const body = req.body;
 
 
 //responder a requisição com o banco completo
-res.json(bd);
+res.status(201).json(userService.createUser(body));
+
 
 })
 
 app.delete("/users/:id", (req,res)=>{
   //pegar o id da requisição
-const idUser = req.params.id;
-  // percorrer o banco e encontrar quem tem o id da requisição
-bd = bd.filter((usuario) => usuario.id != idUser);
+  const idUser = req.params.id;
+  
+
+  
   // deleta o condenado
 
   // responder com o meu banco atualizado
-res.json(bd);
+  res.json("Apagado com sucesso");
 
 })
 
@@ -61,22 +62,9 @@ const idUser = req.params.id;
 const body = req.body;
 
 //percorrer o banco
-bd = bd.map((usuario) => {
-//ad
-  if(usuario.id === idUser) {
-    //atualizar as informaçoes
-      usuario.name = body.name;
-  }
-
-  return usuario
-
- 
- 
-
-})
 
  //responder a requisição do banco
-res.json(bd);
+res.json(userService.updateUser(idUser, body));
 
 
 }) 
